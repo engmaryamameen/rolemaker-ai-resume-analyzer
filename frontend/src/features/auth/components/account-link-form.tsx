@@ -68,7 +68,7 @@ export function AccountLinkForm({ mode }: { mode: Mode }) {
           <div role="status" className="mt-5 space-y-4">
             <p>
               {mode === "forgot-password"
-                ? `A password reset link has been requested for ${email}. Check your inbox and spam folder. The link expires after 30 minutes.`
+                ? `If an account exists for ${email}, check your inbox and spam folder for a password reset link. The link expires after 30 minutes.`
                 : mode === "verify-email" && !token
                   ? "If this address needs verification, an email will arrive with a link valid for 30 minutes."
                   : mode === "reset-password"

@@ -52,6 +52,15 @@ clearing the browser, or deleting the guest report does not restore the allowanc
 The test fails early with a descriptive error if the allowance was already consumed.
 Never remove a real user/database volume to reset E2E state.
 
+When running several browser journeys through the Compose edge, its per-IP upload
+and identity limits also apply across test accounts. Even one rapid browser journey
+can exhaust the general API burst allowance. If a scenario receives a 429, inspect
+the response and retry after the limit window; a paced browser run can help separate
+rate-limit behavior from the journey being tested. Test rate limiting separately,
+and do not relax production edge limits just to make a suite pass. CI's native API
+setup sets higher test-only authentication and demo limits and does not exercise
+the Compose edge's limits.
+
 Coverage includes guest upload, registration, extraction review, requirement edits, source inspection,
 user-authored corrections, reruns, comparisons, exports, deletion and failed sign-out. Responsive tests
 exercise upload, processing and limited states at ten widths, asserting column geometry as well as

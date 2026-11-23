@@ -179,18 +179,15 @@ def _email_request(
     background: BackgroundTasks,
     settings: Settings,
     purpose: lifecycle.Purpose,
-    db: Session,
 ) -> Response:
     limiter.check(f"email:{client_ip(request, settings)}", settings.rate_limit_auth_per_minute)
     identity = hashlib.sha256(body.email.strip().lower().encode()).hexdigest()
     limiter.check(f"email:{purpose}:{identity}", 3)
     if purpose == "reset_password":
         try:
-            address = normalise_email(body.email)
+            normalise_email(body.email)
         except ValueError:
             raise ValidationFailed("Enter a valid email address.", code="invalid_email") from None
-        if db.scalar(select(User.id).where(User.email == address)) is None:
-            raise ValidationFailed("No account exists with this email address.", code="account_not_found")
     lifecycle.require_delivery(settings)
     background.add_task(lifecycle.send_account_link, settings, body.email, purpose)
     return Response(status_code=204)
@@ -201,10 +198,9 @@ def forgot_password(
     body: EmailRequest,
     request: Request,
     background: BackgroundTasks,
-    db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
 ) -> Response:
-    return _email_request(body, request, background, settings, "reset_password", db)
+    return _email_request(body, request, background, settings, "reset_password")
 
 
 @router.post("/request-verification", status_code=204)
@@ -212,10 +208,9 @@ def request_verification(
     body: EmailRequest,
     request: Request,
     background: BackgroundTasks,
-    db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
 ) -> Response:
-    return _email_request(body, request, background, settings, "verify_email", db)
+    return _email_request(body, request, background, settings, "verify_email")
 
 
 @router.post("/verify-email", status_code=204)
