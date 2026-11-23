@@ -8,7 +8,7 @@ export default function Register() {
   return (
     <>
       <SiteHeader />
-      <main id="main" className="px-4">
+      <main id="main" className="auth-page px-4">
         <AuthForm mode="register" />
       </main>
     </>

@@ -59,28 +59,14 @@ export default function Landing() {
       <SiteHeader />
       <main id="main">
         <div className={styles.hero}>
-          <Image
-            src="/images/resume-review.webp"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className={styles.heroImage}
-          />
-
           <section className={styles.heroContent} aria-labelledby="landing-title">
-            <Eyebrow>Your experience. A clearer next step.</Eyebrow>
+            <Eyebrow>RÉSUMÉ REVIEW, WITH EVIDENCE</Eyebrow>
             <h1 id="landing-title">
-              Bring Your Experience
-              <br />
-              Into Focus For
-              <br />
-              Your <span>Next Role</span>
+              Make your experience <span>clearer.</span>
             </h1>
             <p className={styles.heroLead}>
-              Get a thoughtful review of your résumé, with or without a target role.
-              <br className={styles.desktopBreak} /> Find the evidence. Understand the gaps. Make
-              your next edit count.
+              See what your résumé says about your work, find gaps in context, and decide what to
+              improve. Add a job description when you want a review for a specific role.
             </p>
             <div className={styles.actions}>
               <a className={styles.primary} href="#analyze">
@@ -92,6 +78,24 @@ export default function Landing() {
             </div>
             <p className={styles.heroNote}>One review without an account · PDF or DOCX</p>
           </section>
+          <aside className={styles.heroExample} aria-label="Example of a review finding">
+            <div className={styles.exampleTopline}>
+              <span>REVIEW EXAMPLE</span>
+              <span>EXAMPLE</span>
+            </div>
+            <p className={styles.exampleLabel}>REQUIREMENT</p>
+            <h2>Python API development</h2>
+            <p className={styles.exampleStatus}>Evidence found</p>
+            <div className={styles.exampleQuote}>
+              <p className={styles.exampleLabel}>FROM THE RÉSUMÉ</p>
+              <blockquote>
+                “Built billing APIs in Python, with integration tests for payment and refund flows.”
+              </blockquote>
+            </div>
+            <p className={styles.exampleFootnote}>
+              Synthetic example · Review each finding before making changes.
+            </p>
+          </aside>
         </div>
         <div className={styles.content}>
           <section className={styles.intro} aria-labelledby="intro-title">
