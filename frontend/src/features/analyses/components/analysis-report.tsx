@@ -310,7 +310,7 @@ export function AnalysisResults({
                 </Select>
               </div>
               <p role="status" className="text-xs text-muted">
-                Showing {visible.length} of {matches.length} requirements
+                {visible.length} of {matches.length} requirements match these filters
               </p>
               {visible.length === 0 && (
                 <div className="mt-4 rounded-lg border border-dashed border-line p-6 text-sm text-muted">
@@ -341,7 +341,7 @@ export function AnalysisResults({
               <h3 className="flex items-center gap-2 text-lg font-medium">
                 <StatusBadge status={status} />
                 <span className="text-sm font-normal text-muted">
-                  {list.length} · {STATUS[status].hint}
+                  {list.length} on this page · {STATUS[status].hint}
                 </span>
               </h3>
               <ul className="mt-3 space-y-3">

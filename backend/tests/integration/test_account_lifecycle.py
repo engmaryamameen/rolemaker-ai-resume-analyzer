@@ -90,7 +90,7 @@ def test_registration_rolls_back_if_session_cannot_be_issued(db_engine):
         assert db.scalar(select(User).where(User.email == "atomic@example.test")) is None
 
 
-def test_recovery_distinguishes_missing_account_without_sending_mail(make_user, monkeypatch):
+def test_recovery_does_not_disclose_account_existence(make_user, monkeypatch):
     _, client = make_user()
     settings = get_settings()
     monkeypatch.setattr(settings, "smtp_host", "mail.example.test")
@@ -101,8 +101,8 @@ def test_recovery_distinguishes_missing_account_without_sending_mail(make_user, 
     unknown = client.post("/api/v1/auth/forgot-password", json={"email": "nobody@example.com"})
     assert known.status_code == 204
     assert known.content == b""
-    assert unknown.status_code == 422
-    assert unknown.json()["error"]["code"] == "account_not_found"
+    assert unknown.status_code == known.status_code
+    assert unknown.content == known.content
     assert len(messages) == 1
     assert "#token=" in messages[0][-2]
     assert "Choose a new password" in messages[0][-1]
@@ -298,9 +298,11 @@ def test_recovery_rejects_malformed_email(client):
     assert response.json()["error"]["code"] == "invalid_email"
 
 
-def test_missing_recovery_accounts_remain_rate_limited(client, db_engine):
+def test_missing_recovery_accounts_remain_rate_limited(client, db_engine, monkeypatch):
+    monkeypatch.setattr(get_settings(), "smtp_host", "mail.example.test")
+    monkeypatch.setattr(get_settings(), "smtp_from", "accounts@example.test")
     for _ in range(3):
         response = client.post("/api/v1/auth/forgot-password", json={"email": "missing@example.test"})
-        assert response.json()["error"]["code"] == "account_not_found"
+        assert response.status_code == 204
     response = client.post("/api/v1/auth/forgot-password", json={"email": "missing@example.test"})
     assert response.status_code == 429

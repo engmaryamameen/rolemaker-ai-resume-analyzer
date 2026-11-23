@@ -10,6 +10,8 @@ Follow the [README](README.md#native-development) for local setup and [testing g
 
 ## Bug reports
 
+For a security concern, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
+
 Use the bug-report template and include reproduction steps, expected behavior, actual behavior, and relevant environment details. Use synthetic documents when sharing a parsing or review issue. Remove credentials, contact information, session tokens, and personal document content from logs and screenshots.
 
 ## Pull requests

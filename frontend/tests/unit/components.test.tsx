@@ -403,6 +403,28 @@ describe("AnalysisResults", () => {
     expect(screen.getByRole("heading", { name: "Rust" })).toBeInTheDocument();
   });
 
+  it("distinguishes the matching total from the number on each page", async () => {
+    const matches = Array.from({ length: 8 }, (_, index) => ({
+      ...supported,
+      requirement: { ...supported.requirement, id: `requirement-${index}` },
+    }));
+    render(
+      <AnalysisResults
+        engine={rulesEngine}
+        assessments={null}
+        matches={matches}
+        warnings={[]}
+        limitations={[]}
+        recommendations={[]}
+      />,
+    );
+    await userEvent.click(screen.getByRole("tab", { name: "Evidence" }));
+    expect(screen.getByText("8 of 8 requirements match these filters")).toBeVisible();
+    expect(screen.getByText(/6 on this page/)).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByText(/2 on this page/)).toBeVisible();
+  });
+
   it("shows an actionable edit first and reveals original wording and an honest template on demand", async () => {
     const { container } = view();
     expect(screen.getByRole("heading", { name: /Show how you used/ })).toBeInTheDocument();
@@ -429,7 +451,7 @@ describe("AnalysisResults", () => {
     expect(screen.getByRole("heading", { name: "Python" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Kubernetes" })).toBeNull();
     await userEvent.type(screen.getByRole("searchbox"), "unrelated");
-    expect(screen.getByText(/Showing 0 of 3/)).toBeInTheDocument();
+    expect(screen.getByText("0 of 3 requirements match these filters")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Clear filters" }));
     expect(screen.getByRole("heading", { name: "Kubernetes" })).toBeInTheDocument();
     await userEvent.type(screen.getByRole("searchbox"), "built an api");
@@ -442,10 +464,10 @@ describe("AnalysisResults", () => {
     await userEvent.click(screen.getByRole("tab", { name: "Evidence" }));
     await userEvent.click(screen.getByRole("combobox", { name: "Requirement priority" }));
     await userEvent.click(screen.getByRole("option", { name: "Nice-to-have" }));
-    expect(screen.getByText(/Showing 0 of 3/)).toBeInTheDocument();
+    expect(screen.getByText("0 of 3 requirements match these filters")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("combobox", { name: "Requirement priority" }));
     await userEvent.click(screen.getByRole("option", { name: "Must-have" }));
-    expect(screen.getByText(/Showing 3 of 3/)).toBeInTheDocument();
+    expect(screen.getByText("3 of 3 requirements match these filters")).toBeInTheDocument();
   });
 
   it("has no detectable accessibility violations", async () => {

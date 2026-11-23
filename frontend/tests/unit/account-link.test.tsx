@@ -84,14 +84,14 @@ it.each(["reset-password", "verify-email"] as const)(
   },
 );
 
-it("keeps recovery editable when the account does not exist", async () => {
+it("keeps recovery editable when email delivery is unavailable", async () => {
   vi.spyOn(authApi, "forgotPassword").mockRejectedValue(
-    new ApiError(422, "account_not_found", "Missing account"),
+    new ApiError(503, "email_unavailable", "Email unavailable"),
   );
   render(<AccountLinkForm mode="forgot-password" />);
   await userEvent.type(screen.getByLabelText("Email"), "missing@example.test");
   await userEvent.click(screen.getByRole("button", { name: "Send email link" }));
-  expect(await screen.findByText(/No account exists with this email address/)).toBeInTheDocument();
+  expect(await screen.findByText(/Something went wrong on our side/)).toBeInTheDocument();
   expect(screen.getByLabelText("Email")).toHaveValue("missing@example.test");
   expect(screen.queryByText("Check your inbox")).not.toBeInTheDocument();
 });
@@ -102,7 +102,7 @@ it("identifies the recovery address and lets the user retry", async () => {
   await userEvent.type(screen.getByLabelText("Email"), "owner@example.test");
   await userEvent.click(screen.getByRole("button", { name: "Send email link" }));
   expect(await screen.findByText("Check your inbox")).toBeInTheDocument();
-  expect(screen.getByText(/requested for owner@example.test/)).toBeInTheDocument();
+  expect(screen.getByText(/If an account exists for owner@example.test/)).toBeInTheDocument();
   await userEvent.click(screen.getByRole("button", { name: "Try again or use another email" }));
   expect(screen.getByLabelText("Email")).toHaveValue("owner@example.test");
   expect(send).toHaveBeenCalledTimes(1);

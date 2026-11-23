@@ -95,6 +95,11 @@ test("register, upload, review the reading, analyze, edit from a suggestion, com
   ).toBeVisible();
   const firstAnalysis = page.url();
 
+  // A saved result must remain available after the browser reloads, not just in client state.
+  await page.reload();
+  await page.getByRole("tab", { name: "Evidence", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Requirement by requirement" })).toBeVisible();
+
   // Kubernetes is only listed in the fixture, so there is a suggestion to show it in use.
   await page.getByRole("link", { name: "Edit résumé" }).click();
   await expect(

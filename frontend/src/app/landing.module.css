@@ -773,3 +773,159 @@
 .faq details[open] .faqToggle > span {
   transform: scaleY(0);
 }
+
+/* The opening explains the product with a labelled example, not a performance claim. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: clamp(36px, 6vw, 88px);
+  min-height: 610px;
+  padding: 80px max(64px, calc((100vw - 1312px) / 2));
+  background: #f3f5ef;
+  color: #1b2a23;
+}
+.hero::after {
+  display: none;
+}
+.heroContent {
+  max-width: 650px;
+  margin: 0;
+  padding: 0;
+}
+.hero .eyebrow {
+  color: #47775d;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.hero h1 {
+  max-width: 620px;
+  font-size: clamp(44px, 5vw, 68px);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  font-weight: 650;
+}
+.hero h1 span {
+  color: #247253;
+}
+.heroLead {
+  max-width: 540px;
+  color: #516459;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.hero .primary {
+  background: #175d43;
+  color: white;
+  border-radius: 6px;
+}
+.hero .primary:hover {
+  background: #104831;
+}
+.hero .secondary {
+  color: #214c39;
+  background: transparent;
+  border: 1px solid #a9c1af;
+  border-radius: 6px;
+}
+.hero .secondary:hover {
+  background: #e5eee5;
+  border-color: #639879;
+}
+.heroNote {
+  color: #5b7063;
+}
+.heroExample {
+  max-width: 470px;
+  width: 100%;
+  padding: clamp(25px, 3vw, 38px);
+  background: #fff;
+  border: 1px solid #dbe6d9;
+  border-radius: 16px;
+  box-shadow: 0 20px 55px rgb(33 65 43 / 10%);
+}
+.exampleTopline {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e2e9df;
+  color: #617668;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.exampleLabel {
+  margin-top: 26px;
+  color: #405e4b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.heroExample h2 {
+  margin-top: 8px;
+  color: #1b2a23;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  font-weight: 650;
+}
+.exampleStatus {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 5px 10px;
+  color: #276549;
+  background: #e8f3e8;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 650;
+}
+.exampleQuote {
+  margin-top: 24px;
+  padding: 1px 18px 18px;
+  border-left: 3px solid #7ab48a;
+  background: #f5f8f3;
+}
+.exampleQuote .exampleLabel {
+  margin-top: 16px;
+}
+.exampleQuote blockquote {
+  margin-top: 10px;
+  color: #344c3e;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.exampleFootnote {
+  margin-top: 22px;
+  color: #455d4d;
+  font-size: 12px;
+  line-height: 1.5;
+}
+@media (max-width: 800px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 56px 24px 64px;
+    gap: 40px;
+  }
+  .hero h1 {
+    font-size: clamp(42px, 9vw, 58px);
+    line-height: 1.09;
+  }
+  .heroLead {
+    font-size: 16px;
+  }
+  .heroExample {
+    max-width: 560px;
+  }
+}
+
+.landing {
+  background: #173f32;
+  --lime: #d8eed1;
+  --teal: #bfe4bc;
+}
+.numbered p {
+  color: #d0dfd2;
+}

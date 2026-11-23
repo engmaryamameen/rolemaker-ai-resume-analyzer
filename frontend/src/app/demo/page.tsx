@@ -38,232 +38,236 @@ export default function Demo() {
   return (
     <>
       <SiteHeader />
-      <main id="main" className="mx-auto min-h-[70vh] max-w-7xl px-5 pb-24 pt-12 lg:px-8">
-        <nav
-          aria-label="Breadcrumb"
-          className="mb-10 flex items-center gap-2 text-xs font-medium text-muted"
-        >
-          <Link className="hover:text-ink" href="/">
-            Overview
-          </Link>
-          <span aria-hidden="true">/</span>
-          <span className="text-ink">Interactive demo</span>
-        </nav>
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
-          <div className="max-w-2xl">
-            <h1 className="mt-4 text-4xl font-semibold tracking-[-.05em] text-ink sm:text-5xl">
-              See how the review works.
-            </h1>
-            <p className="mt-4 max-w-xl text-base leading-7 text-muted">
-              Try a sample résumé and role. Follow each finding back to the original wording.
-            </p>
-          </div>
-          <div className="text-xs leading-5 text-muted">
-            <strong className="block font-semibold text-ink">Synthetic examples</strong>
-            Demo content is synthetic and is not saved.
-          </div>
-        </div>
-        <div className="grid gap-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:items-start">
-          <aside className="demo-panel p-6 lg:sticky lg:top-24">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold tracking-tight">Choose an example</h2>
-              <span className="demo-step">01 / 02</span>
-            </div>
-            <p className="mt-2 text-sm leading-6 text-muted">
-              Pick a résumé and the role to compare it with.
-            </p>
-            {samples.loading && !samples.data && !samples.error && (
-              <div role="status" className="mt-7 space-y-4" aria-label="Fetching demo examples">
-                <div className="h-4 w-24 animate-pulse rounded bg-raised" />
-                <div className="h-12 animate-pulse rounded-lg bg-raised" />
-                <div className="h-4 w-24 animate-pulse rounded bg-raised" />
-                <div className="h-12 animate-pulse rounded-lg bg-raised" />
-                <p className="text-xs text-muted">Connecting to the local analysis API…</p>
-              </div>
-            )}
-            {!!samples.error && (
-              <div className="mt-6">
-                <ErrorState error={samples.error} onRetry={samples.reload} />
-                <p className="mt-3 text-xs leading-5 text-muted">
-                  The analysis service is unavailable. Try again shortly.
-                </p>
-              </div>
-            )}
-            {samples.data && (
-              <form onSubmit={run} className="mt-7 space-y-6">
-                <div>
-                  <label
-                    htmlFor="demo-resume"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-widest text-muted"
-                  >
-                    01 — Sample résumé
-                  </label>
-                  <Select
-                    id="demo-resume"
-                    required
-                    className="demo-select"
-                    value={resume}
-                    onChange={(value) => {
-                      setResume(value);
-                      setResult(null);
-                    }}
-                  >
-                    <option value="">Select a résumé</option>
-                    {samples.data.resumes.map((r) => (
-                      <option key={r.id} value={r.id} data-description={r.description}>
-                        {r.title}
-                      </option>
-                    ))}
-                  </Select>
-                  <p className="mt-2 min-h-10 text-xs leading-5 text-muted">
-                    {samples.data.resumes.find((r) => r.id === resume)?.description ??
-                      "Select a document to review its evidence."}
-                  </p>
-                </div>
-                <div>
-                  <label
-                    htmlFor="demo-job"
-                    className="mb-2 block text-xs font-semibold uppercase tracking-widest text-muted"
-                  >
-                    02 — Target role
-                  </label>
-                  <Select
-                    id="demo-job"
-                    required
-                    className="demo-select"
-                    value={job}
-                    onChange={(value) => {
-                      setJob(value);
-                      setResult(null);
-                    }}
-                  >
-                    <option value="">Select a job description</option>
-                    {samples.data.jobs.map((j) => (
-                      <option key={j.id} value={j.id} data-description={j.description}>
-                        {j.title}
-                      </option>
-                    ))}
-                  </Select>
-                  <p className="mt-2 min-h-10 text-xs leading-5 text-muted">
-                    {samples.data.jobs.find((j) => j.id === job)?.description ??
-                      "Select the requirements to compare against."}
-                  </p>
-                </div>
-                <Button type="submit" className="w-full" busy={busy} disabled={!resume || !job}>
-                  {busy ? "Analyzing evidence…" : "Analyze these documents"}{" "}
-                  <Icon name="arrowUpRight" size={17} />
-                </Button>
-                <p className="text-xs leading-5 text-muted">
-                  This demo uses a clearly labeled rule-based baseline. Neural models are not
-                  represented as active or accurate until they are evaluated and approved.
-                </p>
-              </form>
-            )}
-          </aside>
-          <section
-            aria-label="Analysis results"
-            className="demo-panel min-h-[470px] overflow-hidden"
+      <div className="demo-surface">
+        <main id="main" className="mx-auto min-h-[70vh] max-w-7xl px-5 pb-24 pt-12 lg:px-8">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-10 flex items-center gap-2 text-xs font-medium text-muted"
           >
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-6 py-4">
-              <div className="flex items-center gap-3">
-                <span className="demo-document-icon">
-                  <Icon name="document" size={20} />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold">Analysis report</p>
-                  <p className="text-xs text-muted">Evidence and interpretation</p>
-                </div>
+            <Link className="hover:text-ink" href="/">
+              Overview
+            </Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-ink">Interactive demo</span>
+          </nav>
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+            <div className="max-w-2xl">
+              <h1 className="mt-4 text-4xl font-semibold tracking-[-.05em] text-ink sm:text-5xl">
+                See how the review works.
+              </h1>
+              <p className="mt-4 max-w-xl text-base leading-7 text-muted">
+                Try a sample résumé and role. Follow each finding back to the original wording.
+              </p>
+            </div>
+            <div className="text-xs leading-5 text-muted">
+              <strong className="block font-semibold text-ink">Synthetic examples</strong>
+              Demo content is synthetic and is not saved.
+            </div>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:items-start">
+            <aside className="demo-panel p-6 lg:sticky lg:top-24">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold tracking-tight">Choose an example</h2>
+                <span className="demo-step">01 / 02</span>
               </div>
-              <span className="demo-engine-badge">
-                {result ? "Rule-based analysis" : "Waiting for documents"}
-              </span>
-            </div>
-            <div className="p-6 sm:p-8" aria-live="polite">
-              {!!error && (
-                <div className="mb-5">
-                  <ErrorState error={error} />
+              <p className="mt-2 text-sm leading-6 text-muted">
+                Pick a résumé and the role to compare it with.
+              </p>
+              {samples.loading && !samples.data && !samples.error && (
+                <div role="status" className="mt-7 space-y-4" aria-label="Fetching demo examples">
+                  <div className="h-4 w-24 animate-pulse rounded bg-raised" />
+                  <div className="h-12 animate-pulse rounded-lg bg-raised" />
+                  <div className="h-4 w-24 animate-pulse rounded bg-raised" />
+                  <div className="h-12 animate-pulse rounded-lg bg-raised" />
+                  <p className="text-xs text-muted">Connecting to the local analysis API…</p>
                 </div>
               )}
-              {busy && (
-                <div role="status" className="space-y-4">
-                  <div className="h-7 w-2/5 animate-pulse rounded bg-raised" />
-                  <div className="h-24 animate-pulse rounded-xl bg-raised" />
-                  <div className="h-24 animate-pulse rounded-xl bg-raised" />
-                  <p className="text-sm text-muted">
-                    Comparing the selected job requirements against the résumé text…
+              {!!samples.error && (
+                <div className="mt-6">
+                  <ErrorState error={samples.error} onRetry={samples.reload} />
+                  <p className="mt-3 text-xs leading-5 text-muted">
+                    The analysis service is unavailable. Try again shortly.
                   </p>
                 </div>
               )}
-              {!busy && result && (
-                <>
-                  <details className="source-reader mb-7">
-                    <summary>
-                      Inspect the source documents{" "}
-                      <span>
-                        Résumé &amp; role <Icon name="chevronDown" size={14} />
-                      </span>
-                    </summary>
-                    <div
-                      className="source-columns"
-                      role="region"
-                      aria-label="Source documents"
-                      tabIndex={0}
+              {samples.data && (
+                <form onSubmit={run} className="mt-7 space-y-6">
+                  <div>
+                    <label
+                      htmlFor="demo-resume"
+                      className="mb-2 block text-xs font-semibold uppercase tracking-widest text-muted"
                     >
-                      <div>
-                        <h3>Résumé · extracted text</h3>
-                        {result.resume.normalized.blocks.map((b) => (
-                          <p key={b.id}>
-                            <span>{b.line}</span>
-                            {b.text}
-                          </p>
-                        ))}
-                      </div>
-                      <div>
-                        <h3>Job description · source</h3>
-                        <pre>{result.job.text}</pre>
-                      </div>
-                    </div>
-                  </details>
-                  <div className="mb-7">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-muted">
-                      Completed comparison
+                      01 — Sample résumé
+                    </label>
+                    <Select
+                      id="demo-resume"
+                      required
+                      className="demo-select"
+                      value={resume}
+                      onChange={(value) => {
+                        setResume(value);
+                        setResult(null);
+                      }}
+                    >
+                      <option value="">Select a résumé</option>
+                      {samples.data.resumes.map((r) => (
+                        <option key={r.id} value={r.id} data-description={r.description}>
+                          {r.title}
+                        </option>
+                      ))}
+                    </Select>
+                    <p className="mt-2 min-h-10 text-xs leading-5 text-muted">
+                      {samples.data.resumes.find((r) => r.id === resume)?.description ??
+                        "Select a document to review its evidence."}
                     </p>
-                    <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-                      {result.resume.title}
-                    </h2>
-                    <p className="mt-1 text-sm text-muted">Against {result.job.title}</p>
                   </div>
-                  {result.resume.parseability.signals.length > 0 && (
-                    <div className="mb-4">
-                      <Notice tone="warn">{result.resume.parseability.signals[0]!.message}</Notice>
-                    </div>
-                  )}
-                  <AnalysisResults
-                    engine={result.engine}
-                    assessments={result.assessments}
-                    warnings={result.warnings}
-                    matches={result.matches}
-                    limitations={result.limitations}
-                    recommendations={result.recommendations}
-                  />
-                </>
-              )}
-              {!busy && !result && (
-                <div className="flex min-h-[360px] flex-col items-center justify-center px-4 text-center">
-                  <Icon name="document" size={34} className="text-muted" />
-                  <h2 className="mt-8 text-xl font-semibold tracking-tight">
-                    Your evidence report will appear here
-                  </h2>
-                  <p className="mt-3 max-w-sm text-sm leading-6 text-muted">
-                    Choose a résumé and a target role to examine matched evidence, uncertainties and
-                    actionable next steps.
+                  <div>
+                    <label
+                      htmlFor="demo-job"
+                      className="mb-2 block text-xs font-semibold uppercase tracking-widest text-muted"
+                    >
+                      02 — Target role
+                    </label>
+                    <Select
+                      id="demo-job"
+                      required
+                      className="demo-select"
+                      value={job}
+                      onChange={(value) => {
+                        setJob(value);
+                        setResult(null);
+                      }}
+                    >
+                      <option value="">Select a job description</option>
+                      {samples.data.jobs.map((j) => (
+                        <option key={j.id} value={j.id} data-description={j.description}>
+                          {j.title}
+                        </option>
+                      ))}
+                    </Select>
+                    <p className="mt-2 min-h-10 text-xs leading-5 text-muted">
+                      {samples.data.jobs.find((j) => j.id === job)?.description ??
+                        "Select the requirements to compare against."}
+                    </p>
+                  </div>
+                  <Button type="submit" className="w-full" busy={busy} disabled={!resume || !job}>
+                    {busy ? "Analyzing evidence…" : "Analyze these documents"}{" "}
+                    <Icon name="arrowUpRight" size={17} />
+                  </Button>
+                  <p className="text-xs leading-5 text-muted">
+                    This demo uses a clearly labeled rule-based baseline. Neural models are not
+                    represented as active or accurate until they are evaluated and approved.
                   </p>
-                </div>
+                </form>
               )}
-            </div>
-          </section>
-        </div>
-      </main>
+            </aside>
+            <section
+              aria-label="Analysis results"
+              className="demo-panel min-h-[470px] overflow-hidden"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <span className="demo-document-icon">
+                    <Icon name="document" size={20} />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold">Analysis report</p>
+                    <p className="text-xs text-muted">Evidence and interpretation</p>
+                  </div>
+                </div>
+                <span className="demo-engine-badge">
+                  {result ? "Rule-based analysis" : "Waiting for documents"}
+                </span>
+              </div>
+              <div className="p-6 sm:p-8" aria-live="polite">
+                {!!error && (
+                  <div className="mb-5">
+                    <ErrorState error={error} />
+                  </div>
+                )}
+                {busy && (
+                  <div role="status" className="space-y-4">
+                    <div className="h-7 w-2/5 animate-pulse rounded bg-raised" />
+                    <div className="h-24 animate-pulse rounded-xl bg-raised" />
+                    <div className="h-24 animate-pulse rounded-xl bg-raised" />
+                    <p className="text-sm text-muted">
+                      Comparing the selected job requirements against the résumé text…
+                    </p>
+                  </div>
+                )}
+                {!busy && result && (
+                  <>
+                    <details className="source-reader mb-7">
+                      <summary>
+                        Inspect the source documents{" "}
+                        <span>
+                          Résumé &amp; role <Icon name="chevronDown" size={14} />
+                        </span>
+                      </summary>
+                      <div
+                        className="source-columns"
+                        role="region"
+                        aria-label="Source documents"
+                        tabIndex={0}
+                      >
+                        <div>
+                          <h3>Résumé · extracted text</h3>
+                          {result.resume.normalized.blocks.map((b) => (
+                            <p key={b.id}>
+                              <span>{b.line}</span>
+                              {b.text}
+                            </p>
+                          ))}
+                        </div>
+                        <div>
+                          <h3>Job description · source</h3>
+                          <pre>{result.job.text}</pre>
+                        </div>
+                      </div>
+                    </details>
+                    <div className="mb-7">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-muted">
+                        Completed comparison
+                      </p>
+                      <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+                        {result.resume.title}
+                      </h2>
+                      <p className="mt-1 text-sm text-muted">Against {result.job.title}</p>
+                    </div>
+                    {result.resume.parseability.signals.length > 0 && (
+                      <div className="mb-4">
+                        <Notice tone="warn">
+                          {result.resume.parseability.signals[0]!.message}
+                        </Notice>
+                      </div>
+                    )}
+                    <AnalysisResults
+                      engine={result.engine}
+                      assessments={result.assessments}
+                      warnings={result.warnings}
+                      matches={result.matches}
+                      limitations={result.limitations}
+                      recommendations={result.recommendations}
+                    />
+                  </>
+                )}
+                {!busy && !result && (
+                  <div className="flex min-h-[360px] flex-col items-center justify-center px-4 text-center">
+                    <Icon name="document" size={34} className="text-muted" />
+                    <h2 className="mt-8 text-xl font-semibold tracking-tight">
+                      Your evidence report will appear here
+                    </h2>
+                    <p className="mt-3 max-w-sm text-sm leading-6 text-muted">
+                      Choose a résumé and a target role to examine matched evidence, uncertainties
+                      and actionable next steps.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
       <SiteFooter />
     </>
   );
