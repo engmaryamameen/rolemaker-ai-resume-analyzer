@@ -274,6 +274,8 @@ def test_lost_commit_acknowledgment_keeps_committed_upload(client, db_engine, mo
 
     actual_commit = Session.commit
     injected = [False]
+    # A retry must resend the same bytes; generating a DOCX twice can change ZIP timestamps.
+    upload = ("cv.docx", make_docx(SAMPLE_RESUME.splitlines()), "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
     def commit_then_disconnect(self):
         actual_commit(self)
@@ -285,7 +287,7 @@ def test_lost_commit_acknowledgment_keeps_committed_upload(client, db_engine, mo
     with monkeypatch.context() as patch:
         patch.setattr(Session, "commit", commit_then_disconnect)
         with pytest.raises(ConnectionError, match="commit acknowledgment lost"):
-            submit(client, key="retry-when-commit-is-uncertain")
+            submit(client, key="retry-when-commit-is-uncertain", data=upload)
 
     with session_scope() as db:
         guest = db.scalar(select(GuestAnalysis))
@@ -294,7 +296,7 @@ def test_lost_commit_acknowledgment_keeps_committed_upload(client, db_engine, mo
         assert db.scalar(select(func.count()).select_from(GuestAllowance)) == 1
         assert store.path(version.storage_key).exists()
 
-    assert submit(client, key="retry-when-commit-is-uncertain").status_code == 202
+    assert submit(client, key="retry-when-commit-is-uncertain", data=upload).status_code == 202
     with session_scope() as db:
         assert db.scalar(select(func.count()).select_from(GuestAnalysis)) == 1
         assert db.scalar(select(func.count()).select_from(ProcessingJob)) == 1
